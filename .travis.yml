@@ -1,0 +1,21 @@
+language: generic 
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t bandlagd/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true bandlagd/react-test npm run test
+
+after_success:
+  - docker build -t bandlagd/multi-client -f ./client    
+  - docker build -t bandlagd/multi-nginx -f ./nginx
+  - docker build -t bandlagd/multi-server -f ./server
+  - docker build -t bandlagd/multi-worker -f ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push bandlagd/multi-client
+  - docker push bandlagd/multi-nginx
+  - docker push bandlagd/multi-server
+  - docker push bandlagd/multi-worker
