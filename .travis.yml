@@ -10,10 +10,10 @@ script:
   - docker run -e CI=true bandlagd/react-test npm run test
 
 after_success:
-  - docker build -t bandlagd/multi-client -f ./client    
-  - docker build -t bandlagd/multi-nginx -f ./nginx
-  - docker build -t bandlagd/multi-server -f ./server
-  - docker build -t bandlagd/multi-worker -f ./worker
+  - docker build -t bandlagd/multi-client ./client    
+  - docker build -t bandlagd/multi-nginx ./nginx
+  - docker build -t bandlagd/multi-server ./server
+  - docker build -t bandlagd/multi-worker ./worker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push bandlagd/multi-client
   - docker push bandlagd/multi-nginx
